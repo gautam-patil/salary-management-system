@@ -82,9 +82,14 @@ Errors come back as `{ "error": "...", "details": [...] }`, with 400 for invalid
 apps/api         Express API, Prisma schema and migrations, seed script
 apps/web         React app
 packages/shared  Validation schemas, types and reference data used by both
-docs/            Requirements
+docs/            Requirements and design notes
 Dockerfile       One image that serves the API and the built web app
 ```
+
+## Documents
+
+- [Requirements](docs/requirements.md): the goal, scope, and what was left out and why.
+- [Design notes](docs/design.md): architecture diagram, data model, decisions, trade-offs and performance numbers.
 
 ## Deployment
 
