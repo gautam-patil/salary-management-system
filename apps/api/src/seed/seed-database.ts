@@ -3,6 +3,13 @@ import { generateEmployees } from "./generate-employees.js";
 
 const BATCH_SIZE = 1_000;
 
+export async function seedIfEmpty(count: number) {
+  if ((await prisma.employee.count()) > 0) return false;
+
+  await seedDatabase(count);
+  return true;
+}
+
 export async function seedDatabase(count: number, seed?: number) {
   const employees = generateEmployees(count, seed);
 

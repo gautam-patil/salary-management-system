@@ -1,7 +1,7 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { prisma } from "../db/client.js";
 import { resetDb } from "../db/test-helpers.js";
-import { seedDatabase } from "./seed-database.js";
+import { seedDatabase, seedIfEmpty } from "./seed-database.js";
 
 describe("seedDatabase", () => {
   beforeEach(resetDb);
@@ -37,5 +37,25 @@ describe("seedDatabase", () => {
     await seedDatabase(10);
 
     expect(await prisma.employee.findUnique({ where: { email: "manual@acme.com" } })).toBeNull();
+  });
+});
+
+describe("seedIfEmpty", () => {
+  beforeEach(resetDb);
+
+  it("seeds an empty database", async () => {
+    const seeded = await seedIfEmpty(20);
+
+    expect(seeded).toBe(true);
+    expect(await prisma.employee.count()).toBe(20);
+  });
+
+  it("leaves a database that already has employees alone", async () => {
+    await seedDatabase(5);
+
+    const seeded = await seedIfEmpty(20);
+
+    expect(seeded).toBe(false);
+    expect(await prisma.employee.count()).toBe(5);
   });
 });

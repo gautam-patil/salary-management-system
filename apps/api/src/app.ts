@@ -1,9 +1,14 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import express from "express";
 import helmet from "helmet";
 import { APP_NAME } from "@acme/shared";
 import { employeeRouter } from "./employees/employee-routes.js";
 
-export function createApp() {
+const defaultWebDist = fileURLToPath(new URL("../../web/dist", import.meta.url));
+
+export function createApp({ webDist = defaultWebDist }: { webDist?: string } = {}) {
   const app = express();
   app.use(helmet());
   app.use(express.json());
@@ -12,6 +17,18 @@ export function createApp() {
     res.json({ status: "ok", app: APP_NAME });
   });
   app.use("/api/employees", employeeRouter);
+  app.use("/api", (_req, res) => {
+    res.status(404).json({ error: "Not found" });
+  });
+
+  // only in production, once the web app has been built
+  const indexHtml = join(webDist, "index.html");
+  if (existsSync(indexHtml)) {
+    app.use(express.static(webDist));
+    app.get("/{*path}", (_req, res) => {
+      res.sendFile(indexHtml);
+    });
+  }
 
   return app;
 }
