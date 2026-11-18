@@ -1,0 +1,14 @@
+{
+  "name": "salary-management-system",
+  "private": true,
+  "version": "0.1.0",
+  "description": "ACME salary management for HR",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "test": "npm test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev:api": "npm run dev -w @acme/api",
+    "dev:web": "npm run dev -w @acme/web"
+  },
+  "engines": { "node": ">=20" }
+}
