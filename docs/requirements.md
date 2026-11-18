@@ -28,9 +28,9 @@ Success looks like:
 - Headline numbers: headcount, total payroll, average and median salary.
 - Salary statistics (min / avg / median / max, headcount) grouped by country,
   department or job title.
-- Salary distribution (bands) as a chart.
-- Cross-country figures are normalised to USD using a static, documented FX table.
-  Per-country figures stay in local currency.
+- Salary distribution: how many employees fall in each salary band, as a table.
+- All insight figures are in USD, converted with a static, documented exchange-rate
+  table. The employee list shows each salary in its own currency.
 
 **C. Data and operations**
 - Seed script that generates 10,000 realistic employees, deterministic via a fixed seed.
@@ -51,7 +51,8 @@ Success looks like:
 ## 4. Key assumptions
 
 - One salary per employee: current annual base pay.
-- Each employee is paid in their country's currency.
+- Salary is stored in the employee's own currency (one of 9 supported). The country
+  only suggests a default.
 - Insights are computed on demand. Fine at 10k rows; revisit if data grows 100x.
 - Median is computed accurately, not approximated.
 
@@ -59,4 +60,4 @@ Success looks like:
 
 - Core logic (stats, FX conversion, validation) is unit tested, fast and deterministic.
 - API covered by HTTP-level tests; list endpoint stays fast with 10k rows (indexed filters).
-- Incremental commits, with design notes and AI usage documented in `docs/`.
+- Incremental commits, with the requirements and design notes in `docs/`.
