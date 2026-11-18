@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import type { SortField } from "@acme/shared";
+import type { Employee, SortField } from "@acme/shared";
 import { fetchEmployees, fetchFilters } from "../../api/employees";
 import { Button } from "../../components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { useDebounce } from "../../hooks/useDebounce";
 import { formatDate, formatSalary } from "../../lib/format";
+import { ConfirmDeleteDialog } from "./ConfirmDeleteDialog";
+import { EmployeeFormDialog } from "./EmployeeFormDialog";
 import { FilterBar, type Filters } from "./FilterBar";
 import { SortableHead } from "./SortableHead";
 
@@ -19,10 +21,14 @@ interface Sort {
   sortDir?: "asc" | "desc";
 }
 
+type DialogState = { kind: "add" } | { kind: "edit"; employee: Employee } | { kind: "delete"; employee: Employee } | null;
+
 export function EmployeesPage() {
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState(noFilters);
   const [sort, setSort] = useState<Sort>({});
+  const [dialog, setDialog] = useState<DialogState>(null);
+  const [notice, setNotice] = useState<string>();
 
   // wait for a pause in typing, but clear straight away when the box is emptied
   const debouncedSearch = useDebounce(filters.search, SEARCH_DELAY_MS);
@@ -59,9 +65,36 @@ export function EmployeesPage() {
 
   const { data } = employees;
 
+  function openDialog(next: DialogState) {
+    setNotice(undefined);
+    setDialog(next);
+  }
+
+  function finished(message: string) {
+    setDialog(null);
+    setNotice(message);
+  }
+
+  function deleted() {
+    // deleting the only employee on the last page would leave an empty page
+    if (page > 1 && data?.items.length === 1) setPage(page - 1);
+    finished("Employee deleted");
+  }
+
   return (
     <div>
-      <FilterBar filters={filters} options={filterOptions.data} onChange={changeFilter} onClear={clearFilters} />
+      <FilterBar filters={filters} options={filterOptions.data} onChange={changeFilter} onClear={clearFilters}>
+        <Button onClick={() => openDialog({ kind: "add" })}>Add employee</Button>
+      </FilterBar>
+
+      {notice && (
+        <div role="status" className="flex items-center justify-between border-b border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">
+          <span>{notice}</span>
+          <button type="button" className="text-xs underline" onClick={() => setNotice(undefined)}>
+            Dismiss
+          </button>
+        </div>
+      )}
 
       {sort.sortBy === "salary" && !filters.country && (
         <p className="border-b border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
@@ -83,6 +116,9 @@ export function EmployeesPage() {
               {head("Country", "country")}
               {head("Salary", "salary", "text-right")}
               {head("Hired", "hireDate")}
+              <TableHead>
+                <span className="sr-only">Actions</span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -97,6 +133,14 @@ export function EmployeesPage() {
                 <TableCell>{e.country}</TableCell>
                 <TableCell className="text-right tabular-nums">{formatSalary(e.salary, e.currency)}</TableCell>
                 <TableCell>{formatDate(e.hireDate)}</TableCell>
+                <TableCell className="space-x-2 whitespace-nowrap text-right">
+                  <Button variant="outline" size="sm" aria-label={`Edit ${e.fullName}`} onClick={() => openDialog({ kind: "edit", employee: e })}>
+                    Edit
+                  </Button>
+                  <Button variant="outline" size="sm" aria-label={`Delete ${e.fullName}`} onClick={() => openDialog({ kind: "delete", employee: e })}>
+                    Delete
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -116,6 +160,18 @@ export function EmployeesPage() {
             </Button>
           </div>
         </div>
+      )}
+
+      {(dialog?.kind === "add" || dialog?.kind === "edit") && (
+        <EmployeeFormDialog
+          employee={dialog.kind === "edit" ? dialog.employee : undefined}
+          countries={filterOptions.data?.countries ?? []}
+          onClose={() => setDialog(null)}
+          onSaved={finished}
+        />
+      )}
+      {dialog?.kind === "delete" && (
+        <ConfirmDeleteDialog employee={dialog.employee} onClose={() => setDialog(null)} onDeleted={deleted} />
       )}
     </div>
   );

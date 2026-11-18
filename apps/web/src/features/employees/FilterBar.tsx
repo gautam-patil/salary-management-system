@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { EmployeeFilters } from "@acme/shared";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -15,9 +16,10 @@ interface Props {
   options?: EmployeeFilters;
   onChange: (field: keyof Filters, value: string) => void;
   onClear: () => void;
+  children?: ReactNode;
 }
 
-export function FilterBar({ filters, options, onChange, onClear }: Props) {
+export function FilterBar({ filters, options, onChange, onClear, children }: Props) {
   const dropdowns = [
     { field: "country", label: "Country", all: "All countries", values: options?.countries },
     { field: "department", label: "Department", all: "All departments", values: options?.departments },
@@ -47,6 +49,7 @@ export function FilterBar({ filters, options, onChange, onClear }: Props) {
       <Button variant="outline" size="sm" onClick={onClear}>
         Clear filters
       </Button>
+      {children && <div className="ml-auto">{children}</div>}
     </div>
   );
 }
