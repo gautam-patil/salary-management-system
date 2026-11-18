@@ -12,3 +12,10 @@ export interface Employee {
   createdAt: string;
   updatedAt: string;
 }
+
+// the values that exist in the data, for the filter dropdowns
+export interface EmployeeFilters {
+  countries: string[];
+  departments: string[];
+  jobTitles: string[];
+}

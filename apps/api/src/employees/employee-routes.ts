@@ -3,7 +3,7 @@ import type { Employee as EmployeeDto, ListQuery, Paginated } from "@acme/shared
 import { listQuerySchema } from "@acme/shared";
 import type { Employee } from "@prisma/client";
 import { validateQuery } from "../middleware/validate-query.js";
-import { listEmployees } from "./employee-repository.js";
+import { listEmployees, listFilterValues } from "./employee-repository.js";
 
 function toDto(e: Employee): EmployeeDto {
   return {
@@ -15,6 +15,10 @@ function toDto(e: Employee): EmployeeDto {
 }
 
 export const employeeRouter = Router();
+
+employeeRouter.get("/filters", async (_req, res) => {
+  res.json(await listFilterValues());
+});
 
 employeeRouter.get("/", validateQuery(listQuerySchema), async (_req, res) => {
   const query: ListQuery = res.locals.query;
