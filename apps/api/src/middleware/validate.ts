@@ -2,10 +2,14 @@ import type { RequestHandler } from "express";
 import type { ZodType } from "zod";
 import { AppError } from "../errors.js";
 
-const MESSAGES = { body: "Invalid request body", query: "Invalid query parameters" };
+const MESSAGES = {
+  body: "Invalid request body",
+  query: "Invalid query parameters",
+  params: "Invalid request parameters",
+};
 
 // the parsed values go on res.locals, because Express 5 makes req.query read-only
-function validate(source: "body" | "query", schema: ZodType): RequestHandler {
+function validate(source: keyof typeof MESSAGES, schema: ZodType): RequestHandler {
   return (req, res, next) => {
     const result = schema.safeParse(req[source]);
 
@@ -22,3 +26,4 @@ function validate(source: "body" | "query", schema: ZodType): RequestHandler {
 
 export const validateBody = (schema: ZodType) => validate("body", schema);
 export const validateQuery = (schema: ZodType) => validate("query", schema);
+export const validateParams = (schema: ZodType) => validate("params", schema);

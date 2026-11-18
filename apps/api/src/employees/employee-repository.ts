@@ -4,15 +4,38 @@ import { prisma } from "../db/client.js";
 import { AppError } from "../errors.js";
 
 const UNIQUE_CONSTRAINT_FAILED = "P2002";
+const RECORD_NOT_FOUND = "P2025";
+
+// turn the database errors we expect into errors the API can answer with
+function translate(error: unknown): never {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === UNIQUE_CONSTRAINT_FAILED) throw new AppError(409, "An employee with this email already exists");
+    if (error.code === RECORD_NOT_FOUND) throw new AppError(404, "Employee not found");
+  }
+  throw error;
+}
 
 export async function createEmployee(input: EmployeeInput) {
   try {
     return await prisma.employee.create({ data: { ...input, hireDate: new Date(input.hireDate) } });
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === UNIQUE_CONSTRAINT_FAILED) {
-      throw new AppError(409, "An employee with this email already exists");
-    }
-    throw error;
+    translate(error);
+  }
+}
+
+export async function updateEmployee(id: number, input: EmployeeInput) {
+  try {
+    return await prisma.employee.update({ where: { id }, data: { ...input, hireDate: new Date(input.hireDate) } });
+  } catch (error) {
+    translate(error);
+  }
+}
+
+export async function deleteEmployee(id: number) {
+  try {
+    await prisma.employee.delete({ where: { id } });
+  } catch (error) {
+    translate(error);
   }
 }
 
