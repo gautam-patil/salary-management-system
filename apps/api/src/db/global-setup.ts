@@ -4,14 +4,14 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 export default function setup() {
-  // Delete the file rather than `db push --force-reset`, which Prisma blocks for AI agents.
+  // start from a missing file, then build it from the real migrations
   for (const suffix of ["", "-journal"]) {
     rmSync(fileURLToPath(new URL(`../../prisma/test.db${suffix}`, import.meta.url)), { force: true });
   }
 
   const prismaCli = createRequire(import.meta.url).resolve("prisma/build/index.js");
 
-  execFileSync(process.execPath, [prismaCli, "db", "push", "--skip-generate"], {
+  execFileSync(process.execPath, [prismaCli, "migrate", "deploy"], {
     env: { ...process.env, DATABASE_URL: "file:./test.db" },
     stdio: "pipe",
   });

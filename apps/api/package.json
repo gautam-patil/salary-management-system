@@ -6,6 +6,9 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "tsx watch src/server.ts",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "seed": "tsx --env-file=.env src/seed/seed.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
