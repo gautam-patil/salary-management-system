@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { SUPPORTED_COUNTRIES, convertToUsd } from "@acme/shared";
 import { generateEmployees } from "./generate-employees.js";
 
 describe("generateEmployees", () => {
@@ -33,6 +34,14 @@ describe("generateEmployees", () => {
     expect(currencyByCountry.get("Germany")).toBe("EUR");
   });
 
+  it("only uses countries the app supports", () => {
+    const countries = new Set(generateEmployees(2_000).map((e) => e.country));
+
+    for (const country of countries) {
+      expect(SUPPORTED_COUNTRIES).toContain(country);
+    }
+  });
+
   it("produces positive whole-number salaries", () => {
     for (const e of generateEmployees(2_000)) {
       expect(Number.isInteger(e.salary)).toBe(true);
@@ -59,7 +68,7 @@ describe("generateEmployees", () => {
     const avg = (country: string) => {
       const pay = generateEmployees(10_000)
         .filter((e) => e.country === country && e.jobTitle === "Software Engineer")
-        .map((e) => e.salary / (e.currency === "INR" ? 83 : 1));
+        .map((e) => convertToUsd(e.salary, e.currency));
       return pay.reduce((a, b) => a + b, 0) / pay.length;
     };
 

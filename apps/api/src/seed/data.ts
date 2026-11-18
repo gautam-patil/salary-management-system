@@ -1,14 +1,16 @@
+// payFactor: typical pay relative to the US; weight: how likely a country is to be picked.
+// Currencies and exchange rates come from the shared reference data.
 export const COUNTRIES = [
-  { name: "United States", currency: "USD", perUsd: 1, payFactor: 1, weight: 25 },
-  { name: "India", currency: "INR", perUsd: 83, payFactor: 0.3, weight: 20 },
-  { name: "United Kingdom", currency: "GBP", perUsd: 0.79, payFactor: 0.8, weight: 10 },
-  { name: "Germany", currency: "EUR", perUsd: 0.92, payFactor: 0.85, weight: 10 },
-  { name: "France", currency: "EUR", perUsd: 0.92, payFactor: 0.8, weight: 8 },
-  { name: "Canada", currency: "CAD", perUsd: 1.36, payFactor: 0.85, weight: 7 },
-  { name: "Australia", currency: "AUD", perUsd: 1.52, payFactor: 0.9, weight: 6 },
-  { name: "Japan", currency: "JPY", perUsd: 150, payFactor: 0.7, weight: 5 },
-  { name: "Brazil", currency: "BRL", perUsd: 5, payFactor: 0.35, weight: 5 },
-  { name: "Singapore", currency: "SGD", perUsd: 1.35, payFactor: 0.9, weight: 4 },
+  { name: "United States", payFactor: 1, weight: 25 },
+  { name: "India", payFactor: 0.3, weight: 20 },
+  { name: "United Kingdom", payFactor: 0.8, weight: 10 },
+  { name: "Germany", payFactor: 0.85, weight: 10 },
+  { name: "France", payFactor: 0.8, weight: 8 },
+  { name: "Canada", payFactor: 0.85, weight: 7 },
+  { name: "Australia", payFactor: 0.9, weight: 6 },
+  { name: "Japan", payFactor: 0.7, weight: 5 },
+  { name: "Brazil", payFactor: 0.35, weight: 5 },
+  { name: "Singapore", payFactor: 0.9, weight: 4 },
 ];
 
 // baseUsd is a typical US salary for the role

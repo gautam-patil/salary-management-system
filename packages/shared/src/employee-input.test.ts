@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CURRENCIES } from "./currency.js";
+import { CURRENCIES } from "./reference-data.js";
 import { employeeInputSchema } from "./employee-input.js";
 
 const valid = {

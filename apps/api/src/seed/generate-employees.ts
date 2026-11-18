@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import { DEFAULT_CURRENCY_BY_COUNTRY, unitsPerUsd } from "@acme/shared";
 import { COUNTRIES, FIRST_NAMES, LAST_NAMES, ROLES } from "./data.js";
 
 const HIRE_WINDOW_START = Date.UTC(2015, 0, 1);
@@ -32,6 +33,7 @@ export function generateEmployees(count: number, seed = 42): SeedEmployee[] {
     const firstName = pick(FIRST_NAMES);
     const lastName = pick(LAST_NAMES);
     const country = pickCountry();
+    const currency = DEFAULT_CURRENCY_BY_COUNTRY[country.name]!;
     const role = pick(ROLES);
 
     const hiredAt = HIRE_WINDOW_START + random() * (HIRE_WINDOW_END - HIRE_WINDOW_START);
@@ -39,7 +41,7 @@ export function generateEmployees(count: number, seed = 42): SeedEmployee[] {
 
     // role base pay, scaled for country, individual variation and 2% a year of service
     const usd = role.baseUsd * country.payFactor * (0.85 + random() * 0.3) * (1 + yearsOfService * 0.02);
-    const salary = Math.round((usd * country.perUsd) / 100) * 100;
+    const salary = Math.round((usd * unitsPerUsd(currency)) / 100) * 100;
 
     return {
       fullName: `${firstName} ${lastName}`,
@@ -48,7 +50,7 @@ export function generateEmployees(count: number, seed = 42): SeedEmployee[] {
       department: role.department,
       country: country.name,
       salary,
-      currency: country.currency,
+      currency,
       hireDate: new Date(hiredAt),
     };
   });

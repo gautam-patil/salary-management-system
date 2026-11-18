@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CURRENCIES } from "./currency.js";
+import { CURRENCIES } from "./reference-data.js";
 
 const requiredText = (label: string) =>
   z
