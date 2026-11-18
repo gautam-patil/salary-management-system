@@ -32,7 +32,7 @@ The demo runs on a free host. After a quiet period the first load can take up to
 
 ## Getting started
 
-You need Node 22.12 or newer. The project was built on Node 26, and the Docker image uses Node 24.
+You need Node 22.12 or newer. The tests, type check and build pass on Node 24 and Node 26, and the Docker image uses Node 24.
 
 ```
 npm install
@@ -40,6 +40,8 @@ cp apps/api/.env.example apps/api/.env
 npm run db:deploy -w @acme/api
 npm run seed -w @acme/api
 ```
+
+On the Windows Command Prompt, use `copy apps\api\.env.example apps\api\.env` instead of `cp`. PowerShell and Git Bash accept `cp`.
 
 `npm install` also generates the Prisma client. `db:deploy` creates the database tables, and `seed` fills them with 10,000 employees (about half a second). The seed is deterministic, so every run produces the same data.
 

@@ -10,5 +10,5 @@
     "dev:api": "npm run dev -w @acme/api",
     "dev:web": "npm run dev -w @acme/web"
   },
-  "engines": { "node": ">=20" }
+  "engines": { "node": ">=22.12" }
 }
