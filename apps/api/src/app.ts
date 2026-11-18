@@ -5,6 +5,7 @@ import express from "express";
 import helmet from "helmet";
 import { APP_NAME } from "@acme/shared";
 import { employeeRouter } from "./employees/employee-routes.js";
+import { errorHandler } from "./middleware/error-handler.js";
 
 const defaultWebDist = fileURLToPath(new URL("../../web/dist", import.meta.url));
 
@@ -29,6 +30,8 @@ export function createApp({ webDist = defaultWebDist }: { webDist?: string } = {
       res.sendFile(indexHtml);
     });
   }
+
+  app.use(errorHandler);
 
   return app;
 }

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import type { Employee as EmployeeDto, ListQuery, Paginated } from "@acme/shared";
-import { listQuerySchema } from "@acme/shared";
+import type { Employee as EmployeeDto, EmployeeInput, ListQuery, Paginated } from "@acme/shared";
+import { employeeInputSchema, listQuerySchema } from "@acme/shared";
 import type { Employee } from "@prisma/client";
-import { validateQuery } from "../middleware/validate-query.js";
-import { listEmployees, listFilterValues } from "./employee-repository.js";
+import { validateBody, validateQuery } from "../middleware/validate.js";
+import { createEmployee, listEmployees, listFilterValues } from "./employee-repository.js";
 
 function toDto(e: Employee): EmployeeDto {
   return {
@@ -32,4 +32,11 @@ employeeRouter.get("/", validateQuery(listQuerySchema), async (_req, res) => {
     totalPages: Math.ceil(total / query.pageSize),
   };
   res.json(body);
+});
+
+employeeRouter.post("/", validateBody(employeeInputSchema), async (_req, res) => {
+  const input: EmployeeInput = res.locals.body;
+  const employee = await createEmployee(input);
+
+  res.status(201).json(toDto(employee));
 });

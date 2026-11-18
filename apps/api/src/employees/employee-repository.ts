@@ -1,6 +1,20 @@
-import type { Employee, Prisma } from "@prisma/client";
-import type { EmployeeFilters, ListQuery } from "@acme/shared";
+import { Prisma, type Employee } from "@prisma/client";
+import type { EmployeeFilters, EmployeeInput, ListQuery } from "@acme/shared";
 import { prisma } from "../db/client.js";
+import { AppError } from "../errors.js";
+
+const UNIQUE_CONSTRAINT_FAILED = "P2002";
+
+export async function createEmployee(input: EmployeeInput) {
+  try {
+    return await prisma.employee.create({ data: { ...input, hireDate: new Date(input.hireDate) } });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === UNIQUE_CONSTRAINT_FAILED) {
+      throw new AppError(409, "An employee with this email already exists");
+    }
+    throw error;
+  }
+}
 
 function buildWhere({ search, country, department, jobTitle }: ListQuery): Prisma.EmployeeWhereInput {
   return {
