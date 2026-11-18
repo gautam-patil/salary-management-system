@@ -97,6 +97,7 @@ describe("employee update and delete", () => {
       ["an invalid email", { email: "nope" }, "email"],
       ["a negative salary", { salary: -1 }, "salary"],
       ["an unsupported currency", { currency: "XXX" }, "currency"],
+      ["an unsupported country", { country: "Narnia" }, "country"],
       ["a hire date in the future", { hireDate: futureDate() }, "hireDate"],
     ])("rejects %s and changes nothing", async (_label, over, field) => {
       const res = await put(asha.id, change(over));

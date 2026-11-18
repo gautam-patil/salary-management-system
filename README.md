@@ -10,7 +10,7 @@ The demo runs on a free host. After a quiet period the first load can take up to
 
 **Employees**
 - List with pagination, search by name or email, filters for country, department and job title, and sorting on any column.
-- Add, edit and delete an employee, with validation (required fields, positive whole-number salary, supported currency, real hire date that is not in the future, unique email).
+- Add, edit and delete an employee, with validation (required fields, supported country, positive whole-number salary, supported currency, real hire date that is not in the future, unique email).
 - Each salary is shown in the employee's own currency.
 
 **Insights**

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CURRENCIES } from "./reference-data.js";
+import { CURRENCIES, SUPPORTED_COUNTRIES } from "./reference-data.js";
 
 const requiredText = (label: string) =>
   z
@@ -24,7 +24,9 @@ export const employeeInputSchema = z.object({
     .pipe(z.email("Invalid email address")),
   jobTitle: requiredText("Job title"),
   department: requiredText("Department"),
-  country: requiredText("Country"),
+  country: requiredText("Country").pipe(
+    z.string().refine((country) => SUPPORTED_COUNTRIES.includes(country), "Unsupported country"),
+  ),
   salary: z
     .number({ error: "Salary must be a number" })
     .int("Salary must be a whole number")

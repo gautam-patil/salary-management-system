@@ -67,6 +67,7 @@ describe("POST /api/employees", () => {
       ["a fractional salary", { salary: 1000.5 }, "salary"],
       ["a salary sent as text", { salary: "100000" }, "salary"],
       ["an unsupported currency", { currency: "XXX" }, "currency"],
+      ["an unsupported country", { country: "Narnia" }, "country"],
       ["a badly formatted hire date", { hireDate: "14/03/2022" }, "hireDate"],
       ["a hire date in the future", { hireDate: futureDate() }, "hireDate"],
     ])("rejects %s", async (_label, change, field) => {

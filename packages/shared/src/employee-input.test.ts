@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CURRENCIES } from "./reference-data.js";
+import { CURRENCIES, SUPPORTED_COUNTRIES } from "./reference-data.js";
 import { employeeInputSchema } from "./employee-input.js";
 
 const valid = {
@@ -63,6 +63,22 @@ describe("employeeInputSchema", () => {
     it("accepts the largest allowed amount and rejects one above it", () => {
       expect(failedFields({ ...valid, salary: 1_000_000_000 })).toEqual([]);
       expect(failedFields({ ...valid, salary: 1_000_000_001 })).toEqual(["salary"]);
+    });
+  });
+
+  describe("country", () => {
+    it.each(SUPPORTED_COUNTRIES)("accepts %s", (country) => {
+      expect(failedFields({ ...valid, country })).toEqual([]);
+    });
+
+    it.each(["Narnia", "india", "IN"])("rejects %j", (country) => {
+      expect(failedFields({ ...valid, country })).toEqual(["country"]);
+    });
+
+    it("says which countries are allowed", () => {
+      const result = employeeInputSchema.safeParse({ ...valid, country: "Narnia" });
+
+      expect(result.success ? "" : result.error.issues[0]?.message).toBe("Unsupported country");
     });
   });
 

@@ -21,8 +21,8 @@ Success looks like:
 - Create, edit and delete an employee.
 - Fields: full name, email, job title, department, country, salary (annual, in the
   local currency), currency (ISO 4217), hire date.
-- Validation on every write (required fields, positive salary, valid currency,
-  unique email).
+- Validation on every write (required fields, supported country, positive salary,
+  valid currency, unique email).
 
 **B. Pay insights (the "answer questions" part)**
 - Headline numbers: headcount, total payroll, average and median salary.
@@ -41,6 +41,7 @@ Success looks like:
 | Left out | Reason |
 |---|---|
 | Authentication / roles | One persona. Adds ceremony without showing the core skill. Would be first on the roadmap. |
+| Managing countries and currencies from the UI | A fixed list is enough for one org. Would move to database tables next. |
 | Live FX rates | Needs an external API and non-deterministic tests. A static table is explainable and testable. |
 | Salary history / audit trail | Valuable but a separate feature. Keeps the data model simple. |
 | Bulk import/export (CSV) | Tempting for ex-Excel users, but the seed covers the initial load. Good next step. |
@@ -53,6 +54,9 @@ Success looks like:
 - One salary per employee: current annual base pay.
 - Salary is stored in the employee's own currency (one of 9 supported). The country
   only suggests a default.
+- Countries, currencies and exchange rates come from a fixed list (10 countries, 9
+  currencies) kept in code. The API rejects any other country. HR cannot add a new
+  one from the UI; that needs a code change and a deploy.
 - Insights are computed on demand. Fine at 10k rows; revisit if data grows 100x.
 - Median is computed accurately, not approximated.
 
