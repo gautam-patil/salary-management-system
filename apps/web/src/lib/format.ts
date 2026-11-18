@@ -6,6 +6,8 @@ export function formatSalary(amount: number, currency: string) {
   }).format(amount);
 }
 
+export const formatUsd = (amount: number) => formatSalary(amount, "USD");
+
 export function formatDate(iso: string) {
   return iso.slice(0, 10);
 }

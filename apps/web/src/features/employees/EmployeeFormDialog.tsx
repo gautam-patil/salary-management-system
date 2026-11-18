@@ -8,7 +8,8 @@ import {
   type Employee,
   type EmployeeInput,
 } from "@acme/shared";
-import { ApiError, createEmployee, updateEmployee } from "../../api/employees";
+import { createEmployee, updateEmployee } from "../../api/employees";
+import { ApiError } from "../../api/http";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Modal } from "../../components/ui/modal";
