@@ -5,6 +5,7 @@ import express from "express";
 import helmet from "helmet";
 import { APP_NAME } from "@acme/shared";
 import { employeeRouter } from "./employees/employee-routes.js";
+import { insightsRouter } from "./insights/insights-routes.js";
 import { errorHandler } from "./middleware/error-handler.js";
 
 const defaultWebDist = fileURLToPath(new URL("../../web/dist", import.meta.url));
@@ -18,6 +19,7 @@ export function createApp({ webDist = defaultWebDist }: { webDist?: string } = {
     res.json({ status: "ok", app: APP_NAME });
   });
   app.use("/api/employees", employeeRouter);
+  app.use("/api/insights", insightsRouter);
   app.use("/api", (_req, res) => {
     res.status(404).json({ error: "Not found" });
   });
